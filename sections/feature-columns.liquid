@@ -1,0 +1,93 @@
+<div class="page-width">
+  <style>
+    #feature-section-container {
+      padding: 5vh 5vw;
+      text-align: center;
+      background-color: white;
+      z-index: -1;
+    }
+    #feature-columns-header {
+      font-size: 32px;
+      margin-bottom: 50px;
+    }
+    #columns-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 40px;
+    }
+    .column_image {
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+    }
+  </style>
+
+  <div id="feature-section-container">
+    <h3 id="feature-columns-header">{{ section.settings.feature_columns_header }}</h3>
+    <div id="columns-container">
+    {% for block in section.blocks %}
+      <div class="column-container">
+        <img src="{{ block.settings.column_image | img_url: 'medium' }}" alt="" class="column_image">
+        <h4>{{ block.settings.column_title }}</h4>
+        <p>{{ block.settings.column_text }}</p>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Feature Columns",
+  "class": "index-section",
+  "max_blocks": 3,
+  "settings": [{
+    "id": "feature_columns_header",
+    "type": "text",
+    "label": "Feature Columns Header",
+    "info": "The header to be displayed above the feature columns."
+    }
+  ],
+  "blocks": [{
+    "name": "Image",
+    "type": "image",
+    "settings": [
+      {
+        "id": "column_image",
+        "type": "image_picker",
+        "label": "Column Image",
+        "info": "The image to be displayed at the top of the column"
+      },
+      {
+        "id": "column_title",
+        "type": "text",
+        "label": "Column Title",
+        "info": "The title to be displayed below the image."
+      },
+      {
+        "id": "column_text",
+        "type": "text",
+        "label": "Column Text",
+        "info": "The text to be displayed below the title"
+      }
+    ]
+  }],
+  "presets": [
+    {
+      "name": "Feature Columns",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
