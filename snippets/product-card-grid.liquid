@@ -19,46 +19,67 @@
   {%- assign preview_image = product.featured_media.preview_image -%}
   {%- assign secondary_image = product.images[1] -%}
   {%- assign img_url = preview_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+  {%- assign secondary_img_url = secondary_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
 
   {% unless preview_image == blank %}
     {% include 'image-style', image: preview_image, height: max_height, wrapper_id: wrapper_id, img_id: img_id %}
   {% endunless %}
 
   <style>
-    #primary:hover {
-      opacity: 1
+    .primary_invisible {
+      opacity: 0;
+      transition: opacity 0.3s;
     }
-    #secondary {
-      opacity: 1;
+    .secondary {
       position: absolute;
+      opacity: 0;
+      transition: opacity 0.3s;
     }
-    #secondary:hover {
-      opacity: 0
+    .secondary_visible {
+      opacity: 1;
+      transition: opacity 0.3s;
     }
-</style>
-
-  <div class="product-card__image-with-placeholder-wrapper" data-image-loading-animation>
+  </style>
+<div class="product-card__image-with-placeholder-wrapper" data-image-loading-animation>
     <div id="{{ wrapper_id }}" class="grid-view-item__image-wrapper product-card__image-wrapper js">
       <div style="padding-top:{% unless preview_image == blank %}{{ 1 | divided_by: preview_image.aspect_ratio | times: 100 }}%{% else %}100%{% endunless %};">
-        <img id="{{ img_id }} primary"
-              class="grid-view-item__image lazyload"
-              alt="{{ preview_image.alt }}"
-              data-src="{{ img_url }}"
-              data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-              data-aspectratio="{{ preview_image.aspect_ratio }}"
-              data-sizes="auto"
-              data-image>
-          <img id="{{ secondary_img_id }} secondary"
-              class="grid-view-item__image lazyload"
-              alt="{{ preview_image.alt }}"
-              data-src="{{ secondary_img }}"
-              data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-              data-aspectratio="{{ preview_image.aspect_ratio }}"
-              data-sizes="auto"
-              data-image>
+        <img id="{{ img_id }}"
+          class="grid-view-item__image lazyload primary"
+          alt="{{ preview_image.alt }}"
+          data-src="{{ img_url }}"
+          data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+          data-aspectratio="{{ preview_image.aspect_ratio }}"
+          data-sizes="auto"
+          data-image>
+        <img id="{{ secondary_img_id }}"
+          class="grid-view-item__image lazyload secondary"
+          alt="{{ secondary_image.alt }}"
+          data-src="{{ secondary_img_url }}"
+          data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+          data-aspectratio="{{ preview_image.aspect_ratio }}"
+          data-sizes="auto"
+          data-image>
       </div>
     </div>
   </div>
+
+  <script>
+    window.onload = () => {
+      const imageContainerArray = document.querySelectorAll('.grid-view-item__image-container');
+      const imageOneArray = document.querySelectorAll('.primary')
+      const imageTwoArray = document.querySelectorAll('.secondary')
+      imageContainerArray.forEach((item, index) => {
+        item.addEventListener('mouseover', () => {
+          imageOneArray[index].classList.add('primary_invisible')
+          imageTwoArray[index].classList.add('secondary_visible')
+        })
+        item.addEventListener('mouseout', () => {
+          imageOneArray[index].classList.remove('primary_invisible')
+          imageTwoArray[index].classList.remove('secondary_visible')
+        })
+      })
+    }
+  </script>
 
   <noscript>
     {% capture image_size %}{{ max_height }}x{{ max_height }}{% endcapture %}
